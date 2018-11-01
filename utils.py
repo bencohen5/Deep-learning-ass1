@@ -20,7 +20,7 @@ for l,f in TEST:
     length = len(f)
     if length>vec_len:
         vec_len=len(f)
-print (vec_len)
+print(vec_len)
 from collections import Counter
 fc = Counter()
 for l,feats in TRAIN:

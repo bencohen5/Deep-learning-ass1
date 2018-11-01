@@ -2,20 +2,14 @@ import loglinear as ll
 import random
 import numpy as np
 from utils import TRAIN, DEV, vocab, L2I, F2I
+from itertools import groupby
 import grad_check
 STUDENT = {'name': 'YOUR NAME',
            'ID': 'YOUR ID NUMBER'}
 
 
 def feats_to_vec(features):
-    vec = []
-    for c in features:
-        l1 = ord(c[0]) - 32
-        l2 = ord(c[1]) - 32
-        num = l1 * 96 + l2
-        vec.append(num / 10000)
-    for c in range(142 - len(features)):
-        vec.append(0)
+    vec = [features.count(c) for c in F2I]
     return np.array(vec)
 
 
@@ -29,6 +23,8 @@ def accuracy_on_dataset(dataset, params):
         x = feats_to_vec(features)
         y = L2I[label]
         y_hat = ll.predict(x, params)
+        if y_hat==3:
+            print("3")
         if y - y_hat == 0:
             good += 1
         else:
@@ -61,6 +57,8 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
             params = W, b
             # update the parameters according to the gradients
             # and the learning rate.
+        if I==4:
+            learning_rate=0.001
 
         train_loss = cum_loss / len(train_data)
         train_accuracy = accuracy_on_dataset(train_data, params)
@@ -73,5 +71,5 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
 if __name__ == '__main__':
     # write code to load the train and dev sets, set up whatever you need,
     # and call train_classifier.
-    params = ll.create_classifier(142, 6)
-    trained_params = train_classifier(TRAIN, DEV, 200, 0.001, params)
+    params = ll.create_classifier(600, 6)
+    trained_params = train_classifier(TRAIN, DEV, 10, 0.01, params)
