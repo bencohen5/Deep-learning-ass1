@@ -48,8 +48,8 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
             params = W, b
             # update the parameters according to the gradients
             # and the learning rate.
-        if epoch==4:
-            learning_rate=0.001
+        if epoch == 4:
+            learning_rate = 0.001
 
         train_loss = cum_loss / len(train_data)
         train_accuracy = accuracy_on_dataset(train_data, params)
