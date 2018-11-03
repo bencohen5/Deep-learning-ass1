@@ -1,16 +1,9 @@
 import loglinear as ll
 import random
-import numpy as np
-from utils import TRAIN, DEV, vocab, L2I, F2I
-from itertools import groupby
-import grad_check
+from utils import TRAIN, DEV, feats_to_vec, L2I
+
 STUDENT = {'name': 'YOUR NAME',
            'ID': 'YOUR ID NUMBER'}
-
-
-def feats_to_vec(features):
-    vec = [features.count(c) for c in F2I]
-    return np.array(vec)
 
 
 def accuracy_on_dataset(dataset, params):
@@ -40,7 +33,7 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
     learning_rate: the learning rate to use.
     params: list of parameters (initial values)
     """
-    for I in range(num_iterations):
+    for epoch in range(num_iterations):
         cum_loss = 0.0  # total loss in this iteration.
         random.shuffle(train_data)
         for label, features in train_data:
@@ -55,14 +48,13 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
             params = W, b
             # update the parameters according to the gradients
             # and the learning rate.
-        if I==4:
+        if epoch==4:
             learning_rate=0.001
 
         train_loss = cum_loss / len(train_data)
         train_accuracy = accuracy_on_dataset(train_data, params)
         dev_accuracy = accuracy_on_dataset(dev_data, params)
-        print
-        I, train_loss, train_accuracy, dev_accuracy
+        print(epoch, train_loss, train_accuracy, dev_accuracy)
     return params
 
 

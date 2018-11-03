@@ -40,11 +40,11 @@ def loss_and_gradients(x, y, params):
     Z1 = x.dot(W) + b
     h1 = np.tanh(Z1)
     y_hat = classifier_output(x, params)
-    gU =np.transpose( [h1]) * ((y_hat - y_vec))
+    gU = np.transpose([h1]) * ((y_hat - y_vec))
     gb_tag = y_hat - y_vec
     U_gb = np.array(U.dot(gb_tag))
-    gb = np.multiply(U_gb,1 - np.power(np.tanh(Z1),2))
-    gW= gb*x_t
+    gb = np.multiply(U_gb, 1 - np.power(np.tanh(Z1), 2))
+    gW = gb * x_t
     loss = -1 * np.log(y_hat[y])
     return loss, [gW, gb, gU, gb_tag]
 
