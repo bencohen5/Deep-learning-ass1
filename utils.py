@@ -14,8 +14,8 @@ def read_data(fname):
 
 
 def feats_to_vec(features):
-#    vec = [features.count(c) for c in F2I]
-    return np.array(features)
+    vec = [features.count(c) for c in F2I]
+    return np.array(vec)
 
 
 def text_to_bigrams(text):
