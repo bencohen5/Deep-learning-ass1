@@ -23,8 +23,6 @@ def accuracy_on_dataset(dataset, params):
         x = feats_to_vec(features)
         y = L2I[label]
         y_hat = ll.predict(x, params)
-        if y_hat==3:
-            print("3")
         if y - y_hat == 0:
             good += 1
         else:
