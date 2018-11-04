@@ -1,6 +1,6 @@
 import mlp1 as ll
 import random
-from utils import TRAIN, DEV, TEST, feats_to_vec, L2I
+from utils import TRAIN_UNI, DEV_UNI, TEST, feats_to_vec_uni, L2I
 from predict_test import predict
 import numpy as np
 
@@ -15,7 +15,7 @@ def accuracy_on_dataset(dataset, params):
         # Compute the accuracy (a scalar) of the current parameters
         # on the dataset.
         # accuracy is (correct_predictions / all_predictions
-        x = feats_to_vec(features)
+        x = feats_to_vec_uni(features)
         y = L2I[label]
         y_hat = ll.predict(x, params)
         if y - y_hat == 0:
@@ -39,7 +39,7 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
         cum_loss = 0.0  # total loss in this iteration.
         random.shuffle(train_data)
         for label, features in train_data:
-            x = feats_to_vec(features)  # convert features to a vector.
+            x = feats_to_vec_uni(features)  # convert features to a vector.
             y = L2I[label]  # convert the label to number if needed.
             loss, grads = ll.loss_and_gradients(x, y, params)
             gw, gb, gu, gb_tag = grads
@@ -52,8 +52,8 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
             params = W, b, U, b_tag
             # update the parameters according to the gradients
             # and the learning rate.
-        if epoch == 4:
-            learning_rate = 0.001
+        """if epoch == 4:
+            learning_rate = 0.001"""
         train_loss = cum_loss / len(train_data)
         train_accuracy = accuracy_on_dataset(train_data, params)
         dev_accuracy = accuracy_on_dataset(dev_data, params)
@@ -64,6 +64,5 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
 if __name__ == '__main__':
     # write code to load the train and dev sets, set up whatever you need,
     # and call train_classifier.
-    params = ll.create_classifier(600, 1200, 6)
-    trained_params = train_classifier(TRAIN, DEV, 10,  0.1, params)
-    predict(TEST, (ll.predict, params))
+    params = ll.create_classifier(600, 1000, 6)
+    trained_params = train_classifier(TRAIN_UNI, DEV_UNI, 10,  0.0485, params)

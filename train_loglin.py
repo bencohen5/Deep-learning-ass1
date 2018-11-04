@@ -1,6 +1,7 @@
 import loglinear as ll
 import random
-from utils import TRAIN, DEV, feats_to_vec, L2I
+from utils import TRAIN, DEV, TEST, feats_to_vec, L2I
+from predict_test import predict
 
 STUDENT = {'name': 'YOUR NAME',
            'ID': 'YOUR ID NUMBER'}
@@ -63,3 +64,4 @@ if __name__ == '__main__':
     # and call train_classifier.
     params = ll.create_classifier(600, 6)
     trained_params = train_classifier(TRAIN, DEV, 10, 0.01, params)
+   # predict(TEST, (ll.predict, params))
