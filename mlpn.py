@@ -62,8 +62,8 @@ def loss_and_gradients(x, y, params):
     grads = []
     layers = get_layers(x, params)
     last_dim = params[-1].size
-    y_vec, y_hat = np.zeros(last_dim), np.zeros(last_dim)
-    y_hat[predict(x, params)] = 1
+    y_vec = np.zeros(last_dim)
+    y_hat = classifier_output(x, params)
     y_vec[y] = 1
     loss = -1 * np.log(y_hat[y])
     g = y_hat - y_vec

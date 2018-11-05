@@ -59,5 +59,5 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
 if __name__ == '__main__':
     # write code to load the train and dev sets, set up whatever you need,
     # and call train_classifier.
-    params = ll.create_classifier([600, 2000, 1000, 6])
-    trained_params = train_classifier(TRAIN, DEV, 30,  0.01, params)
+    params = ll.create_classifier([600, 1200, 6])
+    trained_params = train_classifier(TRAIN, DEV, 10,  0.0285, params)
