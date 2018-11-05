@@ -4,9 +4,13 @@
       <w>bigrams</w>
       <w>dataset</w>
       <w>fname</w>
+      <w>grds</w>
+      <w>perceptron</w>
       <w>pred</w>
       <w>probs</w>
       <w>softmax</w>
+      <w>tanh</w>
+      <w>unigrams</w>
     </words>
   </dictionary>
 </component>

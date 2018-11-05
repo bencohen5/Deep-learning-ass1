@@ -1,23 +1,10 @@
 import numpy as np
+from utils import softmax, tanh
 
 STUDENT = {'name': 'YOUR NAME',
            'ID': 'YOUR ID NUMBER'}
 
-
-def softmax(x):
-    """
-    Compute the softmax vector.
-    x: a n-dim vector (numpy array)
-    returns: an n-dim vector (numpy array) of softmax values
-    """
-    e_x = np.exp(x - np.max(x))
-    x = e_x / e_x.sum()
-    # Your code should be fast, so use a vectorized implementation using numpy,
-    # don't use any loops.
-    # With a vectorized implementation, the code should be no more than 2 lines.
-    #
-    # For numeric stability, use the identify you proved in Ex 2 Q1.
-    return x
+ACTIVATION = tanh
 
 
 def classifier_output(x, params):
@@ -25,11 +12,32 @@ def classifier_output(x, params):
     Return the output layer (class probabilities)
     of a log-linear classifier with given params on input x.
     """
-    probs = softmax(x.dot(params[-2]) + params[-1])
+    h = x
+    for w, b in zip(params[::2], params[1::2]):
+        x = np.dot(h, w) + b
+        h = ACTIVATION(x)
+    probs = softmax(x)
     return probs
+
 
 def predict(x, params):
     return np.argmax(classifier_output(x, params))
+
+
+def get_layers(x, params):
+    """
+    returns the layers in reversed order. after activation func the layer is considered a new layer.
+    :param x: input vector
+    :param params: parameters list
+    :return: list of the layers except last one
+    """
+    layers = [x, x]
+    for w, b in zip(params[:-2:2], params[1:-2:2]):
+        x = np.dot(x, w) + b
+        layers = [x] + layers
+        x = ACTIVATION(x)
+        layers = [x] + layers
+    return layers
 
 
 def loss_and_gradients(x, y, params):
@@ -49,34 +57,28 @@ def loss_and_gradients(x, y, params):
     (of course, if we request a linear classifier (ie, params is of length 2),
     you should not have gW2 and gb2.)
     """
-    # YOU CODE HERE
-    # if len(params) ==0 :
-    # TODO
-    y_hat = classifier_output(x, params)
-    y_vec = np.zeros(y_hat.shape)
+
+    rev_params = list(reversed(params))
+    grads = []
+    layers = get_layers(x, params)
+    last_dim = params[-1].size
+    y_vec, y_hat = np.zeros(last_dim), np.zeros(last_dim)
+    y_hat[predict(x, params)] = 1
     y_vec[y] = 1
-    layers = create_layers(x, params)
-    grad = []
-    g = y_hat - y_vec
-    grad.insert(0, np.transpose([layers[0]]) * (g))
-    del params[-1]
-    del params[-2]
-    for l,(w,b) in layers[1:],params:
-        g = np.multiply(g.dot(np.transpose(w)),1-np.power(np.tanh(l),2))
-        gW = np.transpose(l)*g
-        gB = g
-        grad.insert(0, gW)
-        grad.insert(0, gB)
     loss = -1 * np.log(y_hat[y])
-    return loss,
+    g = y_hat - y_vec
 
+    for h, z, b, w in zip(layers[::2], layers[1::2], rev_params[::2], rev_params[1::2]):
+        gb = g
+        gw = np.dot(np.transpose([h]), [g])
+        gh = np.dot(g, np.transpose(w))
+        gz = np.multiply(gh, ACTIVATION(z, derivative=True))
+        grads = [gb] + grads
+        grads = [gw] + grads
+        g = gz
 
-def create_layers(x, params):
-    layers = []
-    layers.append(np.tanh(x.dot(params[0]) + params[1]))
-    for w, b in params[2:]:
-        layers.append(np.tanh(layers[-1].dot(w) + b))
-    layers[-1] = np.arctan(layers[-1])
+    return loss, grads
+
 
 def create_classifier(dims):
     """
@@ -99,9 +101,16 @@ def create_classifier(dims):
     second layer, and so on.
     """
     params = []
-    for d1, d2 in dims, dims[1:]:
+    for d1, d2 in zip(dims, dims[1:]):
         w = np.zeros((d1, d2))
         b = np.zeros(d2)
         params.append(w)
         params.append(b)
     return params
+
+
+if __name__ == "__main__":
+    p = create_classifier([100, 300, 600, 5])
+    lrs = get_layers(np.zeros(100), p)
+    _, grds = loss_and_gradients(np.ones(100), 2, p)
+    print("hi")
