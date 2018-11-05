@@ -25,8 +25,10 @@ def classifier_output(x, params):
     Return the output layer (class probabilities)
     of a log-linear classifier with given params on input x.
     """
-    probs = softmax(x.dot(params[-2]) + params[-1])
+    layers = create_layers(x, params)
+    probs = softmax(layers[-1])
     return probs
+
 
 def predict(x, params):
     return np.argmax(classifier_output(x, params))
@@ -58,25 +60,26 @@ def loss_and_gradients(x, y, params):
     layers = create_layers(x, params)
     grad = []
     g = y_hat - y_vec
-    grad.insert(0, np.transpose([layers[0]]) * (g))
-    del params[-1]
-    del params[-2]
-    for l,(w,b) in layers[1:],params:
-        g = np.multiply(g.dot(np.transpose(w)),1-np.power(np.tanh(l),2))
-        gW = np.transpose(l)*g
+    grad.insert(0, np.transpose([layers[-2]]) * g)#w*g last layer before soft max
+    grad.insert(0, g)
+    for (l, w, b) in zip(layers[-2::], params[-2:0:-2], params[-1:1:-2]):
+        g = np.multiply(g.dot(np.transpose(w)), 1 - np.power(np.tanh(l), 2))
+        gW = np.transpose([l]) * g
         gB = g
-        grad.insert(0, gW)
         grad.insert(0, gB)
+        grad.insert(0, gW)
     loss = -1 * np.log(y_hat[y])
-    return loss,
+    return loss, grad
 
 
 def create_layers(x, params):
     layers = []
     layers.append(np.tanh(x.dot(params[0]) + params[1]))
-    for w, b in params[2:]:
+    for w, b in zip(params[2:-2:2], params[3:-2:2]):
         layers.append(np.tanh(layers[-1].dot(w) + b))
-    layers[-1] = np.arctan(layers[-1])
+    layers.append(layers[-1].dot(params[-2]) + params[-1])#last layer without tanh
+    return layers
+
 
 def create_classifier(dims):
     """
@@ -99,7 +102,7 @@ def create_classifier(dims):
     second layer, and so on.
     """
     params = []
-    for d1, d2 in dims, dims[1:]:
+    for (d1, d2) in zip(dims, dims[1:]):
         w = np.zeros((d1, d2))
         b = np.zeros(d2)
         params.append(w)
