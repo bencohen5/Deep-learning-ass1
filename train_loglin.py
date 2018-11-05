@@ -1,4 +1,4 @@
-import loglinear as ll
+import mlpn as ll
 import random
 from utils import TRAIN, DEV, TEST, feats_to_vec, L2I
 from predict_test import predict
@@ -62,6 +62,6 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
 if __name__ == '__main__':
     # write code to load the train and dev sets, set up whatever you need,
     # and call train_classifier.
-    params = ll.create_classifier(600, 6)
+    params = ll.create_classifier(600,6)
     trained_params = train_classifier(TRAIN, DEV, 10, 0.01, params)
    # predict(TEST, (ll.predict, params))
