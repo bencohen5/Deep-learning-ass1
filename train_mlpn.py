@@ -1,8 +1,6 @@
 import mlpn as ll
 import random
-from utils import TRAIN_UNI, DEV_UNI, TEST, feats_to_vec_uni, L2I
-from predict_test import predict
-import numpy as np
+from utils import TRAIN, DEV, TEST, feats_to_vec_uni, L2I
 
 STUDENT = {'name': 'YOUR NAME',
            'ID': 'YOUR ID NUMBER'}
@@ -61,5 +59,5 @@ def train_classifier(train_data, dev_data, num_iterations, learning_rate, params
 if __name__ == '__main__':
     # write code to load the train and dev sets, set up whatever you need,
     # and call train_classifier.
-    params = ll.create_classifier([600, 1000, 6])
-    trained_params = train_classifier(TRAIN_UNI, DEV_UNI, 10,  0.0485, params)
+    params = ll.create_classifier([600, 2000, 1000, 6])
+    trained_params = train_classifier(TRAIN, DEV, 30,  0.01, params)

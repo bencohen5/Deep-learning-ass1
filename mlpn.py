@@ -102,8 +102,8 @@ def create_classifier(dims):
     """
     params = []
     for d1, d2 in zip(dims, dims[1:]):
-        w = np.zeros((d1, d2))
-        b = np.zeros(d2)
+        w = np.random.randn(d1, d2)
+        b = np.random.randn(d2)
         params.append(w)
         params.append(b)
     return params

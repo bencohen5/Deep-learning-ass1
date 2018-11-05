@@ -19,7 +19,7 @@ def softmax(x):
 
 
 def tanh(x, derivative=False):
-    res = np.exp(x) - np.exp(-x) / (np.exp(x) + np.exp(-x))
+    res = np.tanh(x)
     if derivative:
         return 1 - res * res
     return res
